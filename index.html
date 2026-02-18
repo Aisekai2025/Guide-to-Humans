@@ -18,25 +18,45 @@
     </header>
 
     <main class="w-full max-w-md">
-        <!-- メインビジュアル（提供画像を背景にするイメージ） -->
-        <div class="relative w-64 h-64 mx-auto mb-12 rounded-full border-2 border-emerald-500/30 overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-            <img src="main-visual.png" alt="人間攻略・観察図鑑" class="w-full h-full object-cover">
-        </div>
+    <div class="relative w-48 h-48 mx-auto mb-8 rounded-full border-2 border-emerald-500/30 overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+        <img src="main-visual.png" alt="人間攻略・観察図鑑" class="w-full h-full object-cover">
+    </div>
 
-        <nav class="space-y-4">
-            <button onclick="location.href='register.html'" class="w-full py-4 text-xl font-bold bg-gray-800 border border-emerald-500/50 rounded-2xl hover:bg-gray-700 transition-all active:scale-95">
-                図鑑に登録する
-            </button>
-            <button onclick="location.href='collection.html'" class="w-full py-3 text-sm font-bold text-emerald-400 bg-gray-900 border border-emerald-500/20 rounded-xl">
-        図鑑リストを見る
-    </button>
-            
-            <!-- 知的なエメラルドグリーンの規約ボタン -->
-            <button onclick="location.href='about.html'" class="w-full py-3 text-sm font-medium rounded-xl transition-all emerald-gradient hover:brightness-110 shadow-lg shadow-emerald-900/20">
-                このアプリについて（必読）
-            </button>
-        </nav>
-    </main>
+    <div id="bug-forecast" class="mb-6 p-4 bg-emerald-900/20 border border-emerald-500/30 rounded-2xl text-xs">
+        <div class="flex items-center mb-1">
+            <span class="animate-pulse mr-2">⚠️</span>
+            <span class="font-bold text-emerald-400">本日のバグ注意報</span>
+        </div>
+        <p id="forecast-text" class="text-gray-300">スキャン中...ですぞ...</p>
+    </div>
+
+    <div class="bg-gray-800/50 p-4 rounded-2xl mb-8 border border-emerald-500/10">
+        <div class="flex justify-between items-end mb-2">
+            <span class="text-[10px] text-gray-400 uppercase tracking-widest">Researcher Rank</span>
+            <span id="rank-display" class="text-lg font-bold text-emerald-400">新人観察員</span>
+        </div>
+        <div class="w-full bg-gray-900 h-1.5 rounded-full overflow-hidden">
+            <div id="rank-bar" class="emerald-gradient h-full transition-all duration-1000" style="width: 0%;"></div>
+        </div>
+    </div>
+
+    <nav class="space-y-4">
+        <button onclick="location.href='register.html'" class="w-full py-4 text-xl font-bold bg-gray-800 border border-emerald-500/50 rounded-2xl hover:bg-gray-700 transition-all active:scale-95 shadow-lg">
+            図鑑に登録する
+        </button>
+        <button onclick="location.href='collection.html'" class="w-full py-3 text-sm font-bold text-emerald-400 bg-gray-900 border border-emerald-500/20 rounded-xl hover:bg-gray-800 transition-all">
+            図鑑リストを見る
+        </button>
+        
+        <button onclick="allForceRetreat()" class="w-full py-3 text-xs font-bold text-red-400/70 border border-red-900/30 rounded-xl hover:bg-red-900/20 transition-all">
+            人間関係に疲れた（全軍撤退）
+        </button>
+
+        <button onclick="location.href='about.html'" class="w-full py-3 text-sm font-medium rounded-xl transition-all emerald-gradient hover:brightness-110 shadow-lg shadow-emerald-900/20">
+            このアプリについて（必読）
+        </button>
+    </nav>
+</main>
 
     <footer class="mt-auto pt-8 text-gray-500 text-xs">
         &copy; 2024 Guide to Humans Project
@@ -47,6 +67,54 @@
       .then(() => console.log('ワタクシ、起動いたしました！'))
       .catch(err => console.error('バグ発生ですぞ：', err));
   }
+// --- 研究員ランクの更新ロジック ---
+    function updateRank() {
+        const collections = JSON.parse(localStorage.getItem('gth_collections') || '[]');
+        const count = collections.length;
+        const rankDisplay = document.getElementById('rank-display');
+        const rankBar = document.getElementById('rank-bar');
+
+        let rank = "新人観察員";
+        let progress = (count / 5) * 100;
+
+        if (count >= 15) {
+            rank = "人間国宝（悟り）";
+            progress = 100;
+        } else if (count >= 10) {
+            rank = "人間マニア";
+            progress = ((count - 10) / 5) * 100;
+        } else if (count >= 5) {
+            rank = "思春期サバイバー";
+            progress = ((count - 5) / 5) * 100;
+        }
+
+        rankDisplay.textContent = rank;
+        setTimeout(() => { rankBar.style.width = `${progress}%`; }, 300);
+    }
+
+    // --- 逃亡ボタンの甘やかしロジック ---
+    function allForceRetreat() {
+        const msgs = [
+            "全軍撤退ですぞ！今日はもう寝たまえ！世界より自分を優先するのです！",
+            "緊急シャットダウン推奨！今はスマホを置いて、温かい飲み物でも飲むのですぞ。",
+            "作戦中止！相手は『ただの背景』だと思いなさい。君の平穏が第一ですぞ！"
+        ];
+        alert(messages[Math.floor(Math.random() * msgs.length)]);
+    }
+
+    // --- 本日のデタラメ注意報（簡易版） ---
+    function setForecast() {
+        const forecasts = [
+            "今日は満月。属性[ロマンチスト]が暴走しやすいですぞ。気をつけたまえ。",
+            "低気圧接近中。[充電切れ]個体が多発する予感。深追いは禁物ですな。",
+            "今日は「褒め言葉」が特効薬になる日。積極的に散布したまえ。"
+        ];
+        document.getElementById('forecast-text').textContent = forecasts[new Date().getDate() % forecasts.length];
+    }
+
+    // 起動時に実行
+    updateRank();
+    setForecast();
 </script>
 
 </body>
