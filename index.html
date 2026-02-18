@@ -91,27 +91,35 @@
         </div>
 
     <nav class="space-y-4">
-        <div class="grid grid-cols-2 gap-3">
+    <div class="grid grid-cols-2 gap-3">
         <button onclick="location.href='register.html'" class="py-6 text-lg font-bold bg-gray-800 border border-emerald-500/50 rounded-2xl hover:bg-gray-700 transition-all active:scale-95 shadow-lg flex flex-col items-center justify-center">
             <span class="text-2xl mb-1">📝</span>
-            図鑑に登録する
+            登録する
         </button>
         <button onclick="location.href='lab.html'" class="py-6 text-lg font-bold bg-gray-800 border border-purple-500/50 rounded-2xl hover:bg-purple-900/20 transition-all active:scale-95 shadow-lg flex flex-col items-center justify-center">
             <span class="text-2xl mb-1">🧪</span>
             モヤっとラボ
         </button>
-        <button onclick="location.href='collection.html'" class="w-full py-3 text-sm font-bold text-emerald-400 bg-gray-900 border border-emerald-500/20 rounded-xl hover:bg-gray-800 transition-all">
-            図鑑リストを見る
-        </button>
-        
-        <button onclick="allForceRetreat()" class="w-full py-3 text-xs font-bold text-red-400/70 border border-red-900/30 rounded-xl hover:bg-red-900/20 transition-all">
-            人間関係に疲れた（全軍撤退）
-        </button>
+    </div>
 
+    <div class="grid grid-cols-2 gap-3">
+        <button onclick="location.href='collection.html'" class="py-3 text-sm font-bold text-emerald-400 bg-gray-900 border border-emerald-500/20 rounded-xl hover:bg-gray-800 transition-all">
+            図鑑リスト
+        </button>
+        <button onclick="openLabManual()" class="py-3 text-sm font-bold text-purple-400 bg-gray-900 border border-purple-500/20 rounded-xl hover:bg-gray-800 transition-all">
+            ラボ解説
+        </button>
+    </div>
+    
+    <div class="space-y-3 pt-2">
         <button onclick="location.href='about.html'" class="w-full py-3 text-sm font-medium rounded-xl transition-all emerald-gradient hover:brightness-110 shadow-lg shadow-emerald-900/20">
             このアプリについて（必読）
         </button>
-    </nav>
+        <button onclick="allForceRetreat()" class="w-full py-3 text-xs font-bold text-red-400/70 border border-red-900/30 rounded-xl hover:bg-red-900/20 transition-all">
+            人間関係に疲れた（全軍撤退）
+        </button>
+    </div>
+</nav>
 </main>
 
     <footer class="mt-auto pt-8 text-gray-500 text-xs">
@@ -228,6 +236,38 @@
         }
         // ----------------------------------------------------   
 </script>
+<div id="lab-manual" class="fixed inset-0 z-50 hidden flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+    <div class="bg-gray-900 border-2 border-purple-500 rounded-3xl p-6 max-w-sm w-full shadow-[0_0_30px_rgba(168,85,247,0.4)]">
+        <h3 class="text-xl font-bold text-purple-400 mb-4 text-center">🧪 ラボ・戦術ガイド</h3>
+        
+        <div class="space-y-4 text-sm leading-relaxed">
+            <div class="border-l-4 border-emerald-500 pl-3">
+                <p class="font-bold text-emerald-400">🤝 同調プロトコル</p>
+                <p class="text-gray-300">相手の周波数に合わせ、一旦パケットを全受容します。相手を油断させ、こちらのCPU負荷を抑える基本戦術ですな。</p>
+            </div>
+            <div class="border-l-4 border-blue-500 pl-3">
+                <p class="font-bold text-blue-400">🛡️ 論理バリア</p>
+                <p class="text-gray-300">感情を排したデータで対抗します。正論パンチなどの攻撃的な個体に対し、鏡のように事実を跳ね返す防御戦術ですぞ。</p>
+            </div>
+            <div class="border-l-4 border-yellow-500 pl-3">
+                <p class="font-bold text-yellow-400">💣 褒め殺しボム</p>
+                <p class="text-gray-300">過剰な称賛パケットを送り、相手の思考回路をオーバーヒートさせます。承認欲求の強い個体をフリーズさせるのに有効ですな！</p>
+            </div>
+            <div class="border-l-4 border-red-500 pl-3">
+                <p class="font-bold text-red-400">🚀 緊急脱出</p>
+                <p class="text-gray-300">通信回線を強制切断します。シミュレーション不能なバグが発生した際、自身のメンタルを守るための最終手段ですぞ！</p>
+            </div>
+        </div>
 
+        <button onclick="closeLabManual()" class="w-full mt-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition-all">
+            了解しましたぞ！
+        </button>
+    </div>
+</div>
+
+<script>
+    function openLabManual() { document.getElementById('lab-manual').classList.remove('hidden'); }
+    function closeLabManual() { document.getElementById('lab-manual').classList.add('hidden'); }
+</script>
 </body>
 </html>
