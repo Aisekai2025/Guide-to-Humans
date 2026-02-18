@@ -63,12 +63,18 @@
         });
 
         function analyzeHuman() {
-            const nickname = document.getElementById('nickname').value;
-            if(!nickname) return alert("ニックネームを入力したまえ！");
-            
-            alert("解析回路を起動しますぞ！少々お待ちを...");
-            location.href = 'result.html'; 
-        }
+    const nickname = document.getElementById('nickname').value;
+    const selectedArray = Array.from(selectedTags);
+    
+    if(!nickname || selectedArray.length === 0) return alert("ニックネームと属性を1つ以上選ぶのだ！");
+
+    // バケツにデータを入れる（localStorage）
+    localStorage.setItem('gth_nickname', nickname);
+    localStorage.setItem('gth_tag', selectedArray[0]); // 最初の一つを解析対象にする
+
+    location.href = 'result.html'; 
+}
+
     </script>
 </body>
 </html>
