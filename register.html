@@ -35,33 +35,7 @@
         <div id="selected-tags-container" class="flex flex-wrap gap-2 min-h-[32px]">
             </div>
     </div>
-
-    <div class="grid grid-cols-2 gap-2" id="category-buttons">
-        </div>
-
-    <hr class="border-emerald-500/10">
-
-    <div id="tag-display-area" class="grid grid-cols-2 gap-2 transition-all duration-300 opacity-0 transform translate-y-4">
-        <p class="col-span-2 text-center text-gray-500 py-10 text-sm">カテゴリーを選択してスキャンを開始したまえ</p>
-    </div>
-</div>
-            </div>
-        </section>
-
-        <!-- エピソード -->
-        <section>
-            <label class="block text-sm font-medium text-emerald-400 mb-2">具体的なバグ（行動）エピソード</label>
-            <textarea id="episode" rows="4" placeholder="いつ、どんなバグが発生したか記述せよ..."
-                class="w-full bg-gray-900 border emerald-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-gray-600"></textarea>
-        </section>
-
-        <!-- 解析ボタン -->
-        <button onclick="analyzeHuman()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 text-lg">
-            解析（攻略アドバイス）を開始する
-        </button>
-    </main>
-
-   <script>
+<script>
     // 1. 50種類の属性データベース（OSカテゴリー分け版）
     const tagDatabase = {
         "通信OS": ["要約禁止", "音量バグ", "正論パンチ", "主語喪失", "既読スルー仕様", "話泥棒", "オウム返し", "独り言モード", "遠回しプロトコル", "沈黙の壁"],
@@ -159,5 +133,31 @@
         location.href = 'result.html'; 
     }
 </script>
+    <div class="grid grid-cols-2 gap-2" id="category-buttons">
+        </div>
+
+    <hr class="border-emerald-500/10">
+
+    <div id="tag-display-area" class="grid grid-cols-2 gap-2 transition-all duration-300 opacity-0 transform translate-y-4">
+        <p class="col-span-2 text-center text-gray-500 py-10 text-sm">カテゴリーを選択してスキャンを開始したまえ</p>
+    </div>
+</div>
+            </div>
+        </section>
+
+        <!-- エピソード -->
+        <section>
+            <label class="block text-sm font-medium text-emerald-400 mb-2">具体的なバグ（行動）エピソード</label>
+            <textarea id="episode" rows="4" placeholder="いつ、どんなバグが発生したか記述せよ..."
+                class="w-full bg-gray-900 border emerald-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-gray-600"></textarea>
+        </section>
+
+        <!-- 解析ボタン -->
+        <button onclick="analyzeHuman()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 text-lg">
+            解析（攻略アドバイス）を開始する
+        </button>
+    </main>
+
+   
 </body>
 </html>
