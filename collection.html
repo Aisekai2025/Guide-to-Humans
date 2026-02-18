@@ -120,11 +120,16 @@ if (collections.length >= 3) {
 
     // 再解析（結果画面へ戻る）
     function reAnalyze(index) {
-        const target = collections[index];
-        localStorage.setItem('gth_nickname', target.nickname);
-        localStorage.setItem('gth_tag', target.tag.replace(/ \/ /g, ',')); // 内部形式に戻す
-        location.href = 'result.html';
-    }
+    const target = collections[index];
+    
+    // ★ ここに再解析カウント増加ロジックを追加！
+    target.reanalyzeCount = (target.reanalyzeCount || 0) + 1;
+    localStorage.setItem('gth_collections', JSON.stringify(collections)); // コレクション全体を保存し直す
+
+    localStorage.setItem('gth_nickname', target.nickname);
+    localStorage.setItem('gth_tag', target.tag.replace(/ \/ /g, ','));
+    location.href = 'result.html';
+}
 
     // 最初にリストを表示
     renderList();
