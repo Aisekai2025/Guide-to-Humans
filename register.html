@@ -29,23 +29,7 @@
         <section>
             <label class="block text-sm font-medium text-emerald-400 mb-2">検知された属性（複数選択可）</label>
             <div id="tag-container" class="flex flex-wrap gap-2">
-                <!-- JavaScriptでタグを生成 -->
-            </div>
-        </section>
-
-        <!-- エピソード -->
-        <section>
-            <label class="block text-sm font-medium text-emerald-400 mb-2">具体的なバグ（行動）エピソード</label>
-            <textarea id="episode" rows="4" placeholder="いつ、どんなバグが発生したか記述せよ..."
-                class="w-full bg-gray-900 border emerald-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-gray-600"></textarea>
-        </section>
-
-        <!-- 解析ボタン -->
-        <button onclick="analyzeHuman()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 text-lg">
-            解析（攻略アドバイス）を開始する
-        </button>
-    </main>
-<div class="w-full max-w-md mx-auto space-y-6">
+                <div class="w-full max-w-md mx-auto space-y-6">
     <div class="bg-gray-900/50 p-3 rounded-xl border border-emerald-500/20">
         <p class="text-[10px] text-emerald-400 mb-2 uppercase tracking-widest">Selected Tags (Max 3)</p>
         <div id="selected-tags-container" class="flex flex-wrap gap-2 min-h-[32px]">
@@ -61,6 +45,21 @@
         <p class="col-span-2 text-center text-gray-500 py-10 text-sm">カテゴリーを選択してスキャンを開始したまえ</p>
     </div>
 </div>
+            </div>
+        </section>
+
+        <!-- エピソード -->
+        <section>
+            <label class="block text-sm font-medium text-emerald-400 mb-2">具体的なバグ（行動）エピソード</label>
+            <textarea id="episode" rows="4" placeholder="いつ、どんなバグが発生したか記述せよ..."
+                class="w-full bg-gray-900 border emerald-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-gray-600"></textarea>
+        </section>
+
+        <!-- 解析ボタン -->
+        <button onclick="analyzeHuman()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 text-lg">
+            解析（攻略アドバイス）を開始する
+        </button>
+    </main>
 
    <script>
     // 1. 50種類の属性データベース（OSカテゴリー分け版）
