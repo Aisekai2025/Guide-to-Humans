@@ -67,12 +67,20 @@
       .then(() => console.log('ワタクシ、起動いたしました！'))
       .catch(err => console.error('バグ発生ですぞ：', err));
   }
+
+// 起動時に実行する関数をまとめる
+    window.onload = function() {
+        updateRank();
+        setForecast();
+    };
 // --- 研究員ランクの更新ロジック ---
     function updateRank() {
         const collections = JSON.parse(localStorage.getItem('gth_collections') || '[]');
         const count = collections.length;
         const rankDisplay = document.getElementById('rank-display');
         const rankBar = document.getElementById('rank-bar');
+
+        if (!rankDisplay || !rankBar) return; // 要素がない場合はスキップ
 
         let rank = "新人観察員";
         let progress = (count / 5) * 100;
@@ -89,32 +97,34 @@
         }
 
         rankDisplay.textContent = rank;
-        setTimeout(() => { rankBar.style.width = `${progress}%`; }, 300);
+        rankBar.style.width = `${progress}%`;
     }
 
-    // --- 逃亡ボタンの甘やかしロジック ---
+    // --- ここを修正しましたぞ！ ---
     function allForceRetreat() {
+        console.log("撤退ボタンが押されましたな"); // 動作確認用
         const msgs = [
             "全軍撤退ですぞ！今日はもう寝たまえ！世界より自分を優先するのです！",
             "緊急シャットダウン推奨！今はスマホを置いて、温かい飲み物でも飲むのですぞ。",
-            "作戦中止！相手は『ただの背景』だと思いなさい。君の平穏が第一ですぞ！"
+            "作戦中止！相手は『ただの背景』だと思いなさい。君の平穏が第一ですぞ！",
+            "本日の研究はここまで！ワタクシが全責任を持って、君を休業させますぞ！"
         ];
-        alert(messages[Math.floor(Math.random() * msgs.length)]);
+        const randomMsg = msgs[Math.floor(Math.random() * msgs.length)];
+        alert(randomMsg);
     }
-
-    // --- 本日のデタラメ注意報（簡易版） ---
+    
     function setForecast() {
+        const forecastText = document.getElementById('forecast-text');
+        if (!forecastText) return;
+
         const forecasts = [
             "今日は満月。属性[ロマンチスト]が暴走しやすいですぞ。気をつけたまえ。",
-            "低気圧接近中。[充電切れ]個体が多発する予感。深追いは禁物ですな。",
-            "今日は「褒め言葉」が特効薬になる日。積極的に散布したまえ。"
+            "低気圧接近中。[充電切れ]個体が多発する予感。深推いは禁物ですな。",
+            "今日は「褒め言葉」が特効薬になる日。積極的に散布したまえ。",
+            "今日は[要約禁止]の個体が活発です。話が長くなるのを覚悟したまえ。"
         ];
-        document.getElementById('forecast-text').textContent = forecasts[new Date().getDate() % forecasts.length];
-    }
-
-    // 起動時に実行
-    updateRank();
-    setForecast();
+        forecastText.textContent = forecasts[new Date().getDate() % forecasts.length];
+    }   
 </script>
 
 </body>
