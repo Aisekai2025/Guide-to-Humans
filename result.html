@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分析結果 | Guide to Humans</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0d1117; color: #e6edf3; }
+        .emerald-glow { text-shadow: 0 0 10px #10b981; }
+        .result-card { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); }
+    </style>
+</head>
+<body class="p-6 max-w-md mx-auto">
+    <header class="mb-8 text-center">
+        <h2 class="text-emerald-400 text-sm font-bold tracking-widest uppercase mb-1">Analysis Complete</h2>
+        <h3 id="nickname-display" class="text-2xl font-bold border-b-2 border-emerald-500 inline-block pb-1">個体：---</h3>
+    </header>
+
+    <main class="space-y-6">
+        <!-- ワタクシの第一声 -->
+        <section class="result-card p-4 rounded-2xl relative">
+            <div class="absolute -top-3 left-4 bg-[#0d1117] px-2 text-xs text-emerald-400 font-bold">The Guide's Voice</div>
+            <p id="first-voice" class="text-lg leading-relaxed italic">「解析中...少々お待ちを...」</p>
+        </section>
+
+        <!-- 攻略のヒント -->
+        <section>
+            <h4 class="text-emerald-400 font-bold mb-3 flex items-center">
+                <span class="mr-2">💡</span> 攻略のヒント
+            </h4>
+            <div id="conquest-hints" class="space-y-3">
+                <!-- ヒントがここに入る -->
+            </div>
+        </section>
+
+        <!-- 観察ポイント -->
+        <section class="bg-gray-900/50 p-4 rounded-xl border border-gray-700">
+            <h4 class="text-emerald-400 font-bold mb-2 flex items-center text-sm">
+                <span class="mr-2">🔍</span> 観察ポイント
+            </h4>
+            <ul id="observation-points" class="text-sm space-y-2 list-disc list-inside text-gray-400">
+                <!-- ポイントがここに入る -->
+            </ul>
+        </section>
+    </main>
+
+    <footer class="mt-10 space-y-3">
+        <button onclick="location.href='index.html'" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95">
+            図鑑に保存して戻る
+        </button>
+        <button onclick="history.back()" class="w-full py-2 text-gray-500 text-sm hover:text-emerald-400 transition-colors">
+            再解析（入力をやり直す）
+        </button>
+    </footer>
+
+    <script>
+        // 本来はAPIから取得するが、今回はデモ用に前ターンのJSONデータをシミュレート
+        const demoResult = {
+            "nickname": "朝の機嫌が悪い大臣",
+            "first_voice": "おやおや！これはまた、実にエネルギッシュかつ複雑な回路の組み合わせをお持ちの個体を発見されましたな。ワタクシ、知的好奇心で震えが止まりませんぞ！",
+            "conquest_hints": [
+                "相手の『音量』が上がった時は、心の中で『おっと、今はライブパフォーマンス中かな？』と観客席に座る気分で眺めるのが吉ですな。",
+                "正論の弾丸が飛んできた時は、スッと横にかわして弾道を分析するフリをしてみたまえ。自分のHPを削らずに済みますぞ。"
+            ],
+            "observation_points": [
+                "バグを起こす直前の予兆（貧乏ゆすり等）を特定できれば、君はもう立派な人間学者ですな。",
+                "怒りの裏に隠れた『分かってほしい信号』の混線を探るのは、実に高度な遊びですぞ！"
+            ]
+        };
+
+        // 画面への反映
+        document.getElementById('nickname-display').textContent = `個体：${demoResult.nickname}`;
+        document.getElementById('first-voice').textContent = demoResult.first_voice;
+        
+        const hintsContainer = document.getElementById('conquest-hints');
+        demoResult.conquest_hints.forEach(hint => {
+            const div = document.createElement('div');
+            div.className = "bg-emerald-900/10 p-3 rounded-lg border-l-4 border-emerald-500 text-sm leading-relaxed";
+            div.textContent = hint;
+            hintsContainer.appendChild(div);
+        });
+
+        const obsContainer = document.getElementById('observation-points');
+        demoResult.observation_points.forEach(point => {
+            const li = document.createElement('li');
+            li.textContent = point;
+            obsContainer.appendChild(li);
+        });
+    </script>
+</body>
+</html>
