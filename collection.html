@@ -1,72 +1,106 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8"><title>図鑑リスト | Guide to Humans</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>図鑑リスト | Guide to Humans</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>body { background-color: #0d1117; color: #e6edf3; }</style>
+    <style>
+        body { background-color: #0d1117; color: #e6edf3; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        .emerald-glow { box-shadow: 0 0 15px rgba(16, 185, 129, 0.1); }
+        .tag-badge { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); }
+    </style>
 </head>
-<body class="p-6 max-w-md mx-auto">
+<body class="p-6 max-w-md mx-auto min-h-screen flex flex-col">
     <header class="mb-8 flex items-center justify-between">
-        <button onclick="location.href='index.html'" class="text-emerald-400">← 戻る</button>
-        <h2 class="text-xl font-bold">攻略済み個体リスト</h2>
+        <button onclick="location.href='index.html'" class="text-emerald-400 font-bold hover:brightness-125 transition-all">
+            ← 拠点へ戻る
+        </button>
+        <h2 class="text-xl font-bold tracking-widest text-emerald-500">COLLECTION</h2>
     </header>
 
-    <main id="collection-list" class="space-y-4">
-        <!-- ここにリストが自動生成されますぞ -->
-    </main>
+    <main id="collection-list" class="space-y-6 flex-1">
+        </main>
 
-   <script>
+    <footer class="mt-12 text-center text-gray-600 text-[10px] tracking-widest uppercase">
+        &copy; Human Observation Project
+    </footer>
+
+    <script>
     // データの読み込み
     let collections = JSON.parse(localStorage.getItem('gth_collections') || '[]');
     const container = document.getElementById('collection-list');
 
     function renderList() {
+        container.innerHTML = ""; 
+
         if (collections.length > 0) {
-            container.innerHTML = ""; 
-            
             collections.forEach((item, index) => {
+                // 属性タグが「 / 」で区切られている場合、配列に分解してバッジ化します
+                const tags = item.tag.split(' / ');
+                const tagHtml = tags.map(t => `<span class="tag-badge text-[10px] text-emerald-400 px-2 py-0.5 rounded-full mr-1 mb-1 inline-block">${t}</span>`).join('');
+
                 const card = document.createElement('div');
-                card.className = "bg-gray-800 p-4 rounded-xl border border-emerald-500/30 flex justify-between items-center mb-4";
+                card.className = "bg-gray-800/50 p-5 rounded-2xl border border-emerald-500/20 emerald-glow transition-all active:scale-[0.98]";
                 card.innerHTML = `
-                    <div class="flex-1">
-                        <div class="text-xs text-emerald-400 font-bold">${item.tag}</div>
-                        <div class="text-lg font-bold">${item.nickname}</div>
+                    <div class="mb-3">
+                        <div class="flex flex-wrap mb-2">
+                            ${tagHtml}
+                        </div>
+                        <div class="text-xl font-bold text-white flex items-center">
+                            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2 animate-pulse"></span>
+                            ${item.nickname}
+                        </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="reAnalyze(${index})" class="text-xs bg-emerald-600 px-3 py-1 rounded-full">再解析</button>
-                        <button onclick="deleteEntry(${index})" class="text-xs bg-red-900/50 text-red-400 border border-red-500/30 px-3 py-1 rounded-full">消去</button>
+                    
+                    <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-700/50">
+                        <div class="text-[9px] text-gray-500 font-mono">
+                            ID: ${String(index + 1).padStart(3, '0')}<br>
+                            DATE: ${new Date(item.date).toLocaleDateString()}
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="reAnalyze(${index})" class="text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg transition-all">
+                                再解析
+                            </button>
+                            <button onclick="deleteEntry(${index})" class="text-[10px] font-bold bg-gray-900 border border-red-900/30 text-red-400/70 hover:bg-red-900/20 px-4 py-2 rounded-lg transition-all">
+                                破棄
+                            </button>
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
             });
         } else {
-            container.innerHTML = "<p class='text-center text-gray-500 py-10'>まだ個体が登録されておりませんな。</p>";
+            container.innerHTML = `
+                <div class="text-center py-20">
+                    <div class="text-4xl mb-4 opacity-20">🔬</div>
+                    <p class="text-gray-500 text-sm italic">
+                        「まだ観測データがありませんな。<br>外の世界へ出て、バグを探してくるのですぞ！」
+                    </p>
+                </div>
+            `;
         }
     }
 
-    // 削除を実行する関数ですぞ
+    // 削除を実行する関数
     function deleteEntry(index) {
-        if (confirm("この個体の研究データを破棄しますか？")) {
-            // 1. 指定した番号のデータを1件削除（splice）しますぞ
+        if (confirm("この個体の研究データを完全に破棄しますか？")) {
             collections.splice(index, 1);
-            
-            // 2. 削除後のリストを保存し直します
             localStorage.setItem('gth_collections', JSON.stringify(collections));
-            
-            // 3. 画面を書き直します
             renderList();
         }
     }
 
+    // 再解析（結果画面へ戻る）
     function reAnalyze(index) {
         const target = collections[index];
         localStorage.setItem('gth_nickname', target.nickname);
-        localStorage.setItem('gth_tag', target.tag);
+        localStorage.setItem('gth_tag', target.tag.replace(/ \/ /g, ',')); // 内部形式に戻す
         location.href = 'result.html';
     }
 
     // 最初にリストを表示
     renderList();
-</script>
+    </script>
 </body>
 </html>
