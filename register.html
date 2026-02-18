@@ -45,6 +45,22 @@
             解析（攻略アドバイス）を開始する
         </button>
     </main>
+<div class="w-full max-w-md mx-auto space-y-6">
+    <div class="bg-gray-900/50 p-3 rounded-xl border border-emerald-500/20">
+        <p class="text-[10px] text-emerald-400 mb-2 uppercase tracking-widest">Selected Tags (Max 3)</p>
+        <div id="selected-tags-container" class="flex flex-wrap gap-2 min-h-[32px]">
+            </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2" id="category-buttons">
+        </div>
+
+    <hr class="border-emerald-500/10">
+
+    <div id="tag-display-area" class="grid grid-cols-2 gap-2 transition-all duration-300 opacity-0 transform translate-y-4">
+        <p class="col-span-2 text-center text-gray-500 py-10 text-sm">カテゴリーを選択してスキャンを開始したまえ</p>
+    </div>
+</div>
 
    <script>
     // 1. 50種類の属性データベース（OSカテゴリー分け版）
