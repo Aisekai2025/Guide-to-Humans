@@ -81,7 +81,34 @@
             `;
         }
     }
+// --- renderList関数の最後の方に追加 ---
+if (collections.length >= 3) {
+    const reportDiv = document.createElement('div');
+    reportDiv.className = "mt-12 p-6 bg-emerald-900/20 rounded-3xl border-2 border-dashed border-emerald-500/30 text-center";
+    
+    // 1. 最も多い属性（タグ）を特定するロジック
+    const allTags = collections.flatMap(item => item.tag.split(' / '));
+    const tagCounts = allTags.reduce((acc, t) => (acc[t] = (acc[t] || 0) + 1, acc), {});
+    const topTag = Object.keys(tagCounts).reduce((a, b) => tagCounts[a] > tagCounts[b] ? a : b);
 
+    // 2. ワタクシからのフィードバック
+    let feedback = "";
+    if (topTag === "天然") {
+        feedback = "君の周りは奇跡のバグ（天然）で溢れていますな！退屈とは無縁の人生ですが、ツッコミ役として過負荷にならないよう注意したまえ。";
+    } else if (topTag === "音量バグ" || topTag === "要約禁止") {
+        feedback = "賑やか（騒がしい）個体が多いようですな。君の耳の健康が心配ですぞ。たまには静寂という名のパッチを当てて休みたまえ。";
+    } else {
+        feedback = `現在、君の周辺では [${topTag}] 属性の個体が活発に活動しているようです。この調子でデータを積み上げ、人間マニアを目指したまえ！`;
+    }
+
+    reportDiv.innerHTML = `
+        <div class="text-xs text-emerald-400 font-bold mb-2 tracking-widest">CURRENT BIOME REPORT</div>
+        <h3 class="text-lg font-bold mb-3">【 周辺生態系レポート 】</h3>
+        <p class="text-sm text-gray-300 leading-relaxed italic">「${feedback}」</p>
+        <div class="mt-4 text-[10px] text-emerald-500/50">総観測数：${collections.length}体 / 主要観測対象：${topTag}</div>
+    `;
+    container.appendChild(reportDiv);
+}
     // 削除を実行する関数
     function deleteEntry(index) {
         if (confirm("この個体の研究データを完全に破棄しますか？")) {
