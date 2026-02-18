@@ -152,17 +152,48 @@
 };
 
 
-    // 【修正】ストレージからニックネームを取得するのです！
-const storedNickname = localStorage.getItem('gth_nickname') || "解析不能個体";
-const selectedTag = localStorage.getItem('gth_tag')?.split(',')[0] || "音量バグ"; // 最初のタグを使用
+   // --- 追加：保存用の関数ですぞ！ ---
+    function saveToCollection(nickname, tag, resultData) {
+        // 今までのリストを読み出す
+        const collections = JSON.parse(localStorage.getItem('gth_collections') || '[]');
 
-const data = adviceDatabase[selectedTag] || adviceDatabase["音量バグ"];
+        // すでに同じ「あだ名」と「タグ」の組み合わせが登録されていないか確認
+        const isDuplicate = collections.some(item => item.nickname === nickname && item.tag === tag);
 
-// 画面への反映（ここを修正！）
-document.getElementById('nickname-display').textContent = `個体：${storedNickname}`;
-document.getElementById('first-voice').textContent = data.first;
+        if (!isDuplicate) {
+            // 新しい個体データを作成（AIのセリフも一緒に保存してしまいますぞ）
+            const newEntry = {
+                nickname: nickname,
+                tag: tag,
+                first: resultData.first,
+                hint: resultData.hint,
+                obs: resultData.obs,
+                date: new Date().toISOString()
+            };
 
-    
+            // リストの先頭に追加して保存
+            collections.unshift(newEntry);
+            localStorage.setItem('gth_collections', JSON.stringify(collections));
+            console.log("図鑑に新規登録完了ですぞ！");
+        }
+    }
+    // ------------------------------
+
+    // ストレージから入力値を取得
+    const storedNickname = localStorage.getItem('gth_nickname') || "解析不能個体";
+    const rawTag = localStorage.getItem('gth_tag') || "音量バグ";
+    const selectedTag = rawTag.split(',')[0]; // 最初のタグを使用
+
+    // データベースから該当する解説を取得
+    const data = adviceDatabase[selectedTag] || adviceDatabase["音量バグ"];
+
+    // --- ここで保存関数を実行しますぞ！ ---
+    saveToCollection(storedNickname, selectedTag, data);
+
+    // 画面への反映
+    document.getElementById('nickname-display').textContent = `個体：${storedNickname}`;
+    document.getElementById('first-voice').textContent = data.first;
+
     const hintsContainer = document.getElementById('conquest-hints');
     const div = document.createElement('div');
     div.className = "bg-emerald-900/10 p-3 rounded-lg border-l-4 border-emerald-500 text-sm leading-relaxed";

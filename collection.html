@@ -15,26 +15,58 @@
         <!-- ここにリストが自動生成されますぞ -->
     </main>
 
-    <script>
-        // ストレージから全データを取得（今回は簡易版として直近の1件を表示）
-        const nickname = localStorage.getItem('gth_nickname');
-        const tag = localStorage.getItem('gth_tag');
+   <script>
+    // データの読み込み
+    let collections = JSON.parse(localStorage.getItem('gth_collections') || '[]');
+    const container = document.getElementById('collection-list');
 
-        if (nickname) {
-            const container = document.getElementById('collection-list');
-            const card = document.createElement('div');
-            card.className = "bg-gray-800 p-4 rounded-xl border border-emerald-500/30 flex justify-between items-center";
-            card.innerHTML = `
-                <div>
-                    <div class="text-xs text-emerald-400 font-bold">${tag}</div>
-                    <div class="text-lg font-bold">${nickname}</div>
-                </div>
-                <button onclick="location.href='result.html'" class="text-xs bg-emerald-600 px-3 py-1 rounded-full">再解析</button>
-            `;
-            container.appendChild(card);
+    function renderList() {
+        if (collections.length > 0) {
+            container.innerHTML = ""; 
+            
+            collections.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-gray-800 p-4 rounded-xl border border-emerald-500/30 flex justify-between items-center mb-4";
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <div class="text-xs text-emerald-400 font-bold">${item.tag}</div>
+                        <div class="text-lg font-bold">${item.nickname}</div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="reAnalyze(${index})" class="text-xs bg-emerald-600 px-3 py-1 rounded-full">再解析</button>
+                        <button onclick="deleteEntry(${index})" class="text-xs bg-red-900/50 text-red-400 border border-red-500/30 px-3 py-1 rounded-full">消去</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         } else {
-            document.getElementById('collection-list').innerHTML = "<p class='text-center text-gray-500'>まだ個体が登録されておりませんな。</p>";
+            container.innerHTML = "<p class='text-center text-gray-500 py-10'>まだ個体が登録されておりませんな。</p>";
         }
-    </script>
+    }
+
+    // 削除を実行する関数ですぞ
+    function deleteEntry(index) {
+        if (confirm("この個体の研究データを破棄しますか？")) {
+            // 1. 指定した番号のデータを1件削除（splice）しますぞ
+            collections.splice(index, 1);
+            
+            // 2. 削除後のリストを保存し直します
+            localStorage.setItem('gth_collections', JSON.stringify(collections));
+            
+            // 3. 画面を書き直します
+            renderList();
+        }
+    }
+
+    function reAnalyze(index) {
+        const target = collections[index];
+        localStorage.setItem('gth_nickname', target.nickname);
+        localStorage.setItem('gth_tag', target.tag);
+        location.href = 'result.html';
+    }
+
+    // 最初にリストを表示
+    renderList();
+</script>
 </body>
 </html>
