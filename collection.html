@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8"><title>図鑑リスト | Guide to Humans</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body { background-color: #0d1117; color: #e6edf3; }</style>
+</head>
+<body class="p-6 max-w-md mx-auto">
+    <header class="mb-8 flex items-center justify-between">
+        <button onclick="location.href='index.html'" class="text-emerald-400">← 戻る</button>
+        <h2 class="text-xl font-bold">攻略済み個体リスト</h2>
+    </header>
+
+    <main id="collection-list" class="space-y-4">
+        <!-- ここにリストが自動生成されますぞ -->
+    </main>
+
+    <script>
+        // ストレージから全データを取得（今回は簡易版として直近の1件を表示）
+        const nickname = localStorage.getItem('gth_nickname');
+        const tag = localStorage.getItem('gth_tag');
+
+        if (nickname) {
+            const container = document.getElementById('collection-list');
+            const card = document.createElement('div');
+            card.className = "bg-gray-800 p-4 rounded-xl border border-emerald-500/30 flex justify-between items-center";
+            card.innerHTML = `
+                <div>
+                    <div class="text-xs text-emerald-400 font-bold">${tag}</div>
+                    <div class="text-lg font-bold">${nickname}</div>
+                </div>
+                <button onclick="location.href='result.html'" class="text-xs bg-emerald-600 px-3 py-1 rounded-full">再解析</button>
+            `;
+            container.appendChild(card);
+        } else {
+            document.getElementById('collection-list').innerHTML = "<p class='text-center text-gray-500'>まだ個体が登録されておりませんな。</p>";
+        }
+    </script>
+</body>
+</html>

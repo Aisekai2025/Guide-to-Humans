@@ -152,15 +152,16 @@
 };
 
 
-    // 解析実行（本来はURLパラメータやストレージから取得）
-    const nickname = localStorage.getItem('gth_nickname') || "解析不能個体";
-    const selectedTag = localStorage.getItem('gth_tag') || "音量バグ";
+    // 【修正】ストレージからニックネームを取得するのです！
+const storedNickname = localStorage.getItem('gth_nickname') || "解析不能個体";
+const selectedTag = localStorage.getItem('gth_tag')?.split(',')[0] || "音量バグ"; // 最初のタグを使用
 
-    const data = adviceDatabase[selectedTag] || adviceDatabase["音量バグ"];
+const data = adviceDatabase[selectedTag] || adviceDatabase["音量バグ"];
 
-    // 画面への反映
-    document.getElementById('nickname-display').textContent = `個体：解析対象`;
-    document.getElementById('first-voice').textContent = data.first;
+// 画面への反映（ここを修正！）
+document.getElementById('nickname-display').textContent = `個体：${storedNickname}`;
+document.getElementById('first-voice').textContent = data.first;
+
     
     const hintsContainer = document.getElementById('conquest-hints');
     const div = document.createElement('div');
