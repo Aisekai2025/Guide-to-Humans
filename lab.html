@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>モヤっと・ラボ | Guide to Humans</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0d1117; color: #e6edf3; font-family: sans-serif; overflow: hidden; }
+        .chat-container { height: calc(100vh - 180px); overflow-y: auto; }
+        /* 相手の吹き出し（左） */
+        .bubble-left {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 18px 18px 18px 2px;
+            position: relative;
+        }
+        /* 自分の吹き出し（右） */
+        .bubble-right {
+            background: #065f46; /* エメラルドグリーン */
+            border-radius: 18px 18px 2px 18px;
+        }
+        .command-panel {
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(16, 185, 129, 0.3);
+        }
+    /* アニメーションを追加ですぞ！ */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bounceIn { 0% { opacity: 0; transform: scale(0.9); } 70% { transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+    .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+    .animate-bounce-in { animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+</style>
+</head>
+<body class="flex flex-col h-screen max-w-md mx-auto border-x border-gray-800">
+
+    <header class="p-4 border-b border-gray-800 flex items-center justify-between bg-gray-900/50">
+        <button onclick="location.href='index.html'" class="text-gray-400">× 中止</button>
+        <div class="text-center">
+            <p id="target-name" class="font-bold text-sm text-white">スキャン中...</p>
+            <p id="target-tags" class="text-[10px] text-emerald-500 font-mono italic">---</p>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-purple-900/50 border border-purple-500 flex items-center justify-center text-xs">🧪</div>
+    </header>
+
+    <main id="chat-box" class="chat-container p-4 space-y-4">
+        <div class="flex justify-center">
+            <p class="text-[10px] bg-gray-800 text-gray-400 px-3 py-1 rounded-full uppercase tracking-widest">Simulation Started</p>
+        </div>
+        
+        <div class="flex items-start gap-2">
+            <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 flex items-center justify-center text-sm">👤</div>
+            <div class="bubble-left p-3 text-sm max-w-[80%] shadow-lg">
+                「え、まだその作業終わってないの？ 私なら5分で終わるけどなぁ…（笑）」
+            </div>
+        </div>
+    </main>
+
+    <section class="command-panel p-4 pb-8 space-y-3">
+        <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-tighter text-center mb-2">Select Counter Command</p>
+        <div class="grid grid-cols-2 gap-2">
+            <button onclick="sendReply('同調', '同調プロトコル')" class="bg-gray-800 border border-emerald-500/30 py-2 rounded-lg text-xs hover:bg-emerald-900/20 active:scale-95 transition-all">
+                🤝 同調プロトコル
+            </button>
+            <button onclick="sendReply('論理', '論理バリア')" class="bg-gray-800 border border-blue-500/30 py-2 rounded-lg text-xs hover:bg-blue-900/20 active:scale-95 transition-all">
+                🛡️ 論理バリア
+            </button>
+            <button onclick="sendReply('褒め', '褒め殺しボム')" class="bg-gray-800 border border-yellow-500/30 py-2 rounded-lg text-xs hover:bg-yellow-900/20 active:scale-95 transition-all">
+                💣 褒め殺しボム
+            </button>
+            <button onclick="sendReply('脱出', '緊急脱出')" class="bg-gray-800 border border-red-500/30 py-2 rounded-lg text-xs hover:bg-red-900/20 active:scale-95 transition-all">
+                🚀 緊急脱出
+            </button>
+        </div>
+    </section>
+
+    <script>
+// --- 1. 巨大データベース（ここが知能ですな！） ---
+const simulationEngine = {
+    patterns: {
+        "正論パンチ": { base: "「それ、感情論ですよね？数字で話してもらえませんか？」", reactions: { "同調": "「話が早くて助かりますな。効率を上げましょう。」", "論理": "「そのデータのソース、古くないですか？（さらに被せてきた！）」", "褒め": "「…まぁ、事実を言ったまでですぞ。（少し火力が落ちた！）」", "脱出": "「逃げるのも非効率的ですな。」" }},
+        "ツンデレ": { base: "「別に、あんたのためにやったんじゃないからね！勘違いしないでよ！」", reactions: { "同調": "「な、何よ素直に認めちゃって…調子狂うわね。」", "論理": "「理屈じゃないのよ！もう、バカじゃないの！？」", "褒め": "「ふ、ふんっ！…（顔が赤くなっているようだ）」", "脱出": "「ちょっと！どこ行くのよ！話は終わってないわよ！」" }},
+        "天然": { base: "「あ、さっきの資料、シュレッダーじゃなくて冷蔵庫に入れちゃいました！」", reactions: { "同調": "「冷え冷えのデータですな！わかりますぞ！」", "論理": "「えっ、冷蔵庫のほうが保存状態がいいかなって…」", "褒め": "「わぁ、褒められちゃった！私って天才かも！」", "脱出": "「あ、バナナ買いに行くの忘れてた！」" }},
+        "ラスボス感": { base: "「……で、君は結局、何が言いたいんだね？（威圧感）」", reactions: { "同調": "「ほう、私の意図を理解しているというわけか。」", "論理": "「面白い。その論理、最後まで聞かせてもらおうか。」", "褒め": "「お世辞はいい。本題に入りたまえ。」", "脱出": "「……（沈黙が一番怖い！）」" }},
+        "要約禁止": { base: "「それでね、昨日あそこに行った時にあんなことがあって、あ、そういえば…（無限ループ）」", reactions: { "同調": "「情報量が豊富で助かりますな！」", "論理": "「えーっと、結論のパケットはどこにありますかな？」", "褒め": "「その話術、落語家レベルですぞ！」", "脱出": "「続きはクラウド（今度）で！」" }},
+        "音量バグ": { base: "「お疲れ様です！！（鼓膜が震える大音量）」", reactions: { "同調": "「元気なOSは最高ですな！」", "論理": "「音量を30%カットして通信しましょう。」", "褒め": "「拡声器いらずの素晴らしい喉ですぞ！」", "脱出": "「耳の再起動が必要なので失礼！」" }}
+        // ... 他の属性も同様に追加可能ですな
+    }
+};
+
+// --- 2. メインロジック ---
+window.onload = () => {
+    const collections = JSON.parse(localStorage.getItem('gth_collections') || '[]');
+    const lastEntry = collections[0]; // 最新の登録個体
+
+    if (lastEntry) {
+        const mainTag = lastEntry.tag.split(' / ')[0];
+        document.getElementById('target-name').textContent = `個体：${lastEntry.nickname}`;
+        document.getElementById('target-tags').textContent = lastEntry.tag;
+
+        // 初期メッセージを属性に合わせて生成
+        const chatBox = document.getElementById('chat-box');
+        const pattern = simulationEngine.patterns[mainTag] || simulationEngine.patterns["天然"];
+        
+        // 既存のダミーメッセージを消して、本物を注入！
+        const initialMsg = chatBox.querySelector('.flex.items-start.gap-2');
+        if (initialMsg) {
+            initialMsg.querySelector('.bubble-left').textContent = pattern.base;
+        }
+    }
+};
+
+function sendReply(type, commandName) {
+    const chatBox = document.getElementById('chat-box');
+    
+    // 1. 自分の送信を表示
+    renderMessage("me", `[${commandName}] を実行中...`);
+
+    // 2. 相手の属性を特定
+    const collections = JSON.parse(localStorage.getItem('gth_collections') || '[]');
+    const lastEntry = collections[0];
+    const mainTag = lastEntry ? lastEntry.tag.split(' / ')[0] : "天然";
+
+    // 3. エンジンからセリフを抽出
+    const pattern = simulationEngine.patterns[mainTag] || simulationEngine.patterns["天然"];
+    const responseText = pattern.reactions[type];
+
+    // 4. 遅延させて相手の反応を表示
+    setTimeout(() => {
+        renderMessage("target", responseText);
+        
+        // 5. 攻略ログを表示（ここがワタクシの見せ場！）
+        setTimeout(() => {
+            const analysis = document.createElement('div');
+            analysis.className = "text-[9px] text-center text-emerald-500/50 italic py-2 animate-fade-in";
+            analysis.textContent = `>>> [LOG] ${mainTag}に${commandName}を検知。精神的優位を確保しました。`;
+            chatBox.appendChild(analysis);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 500);
+        
+    }, 1000);
+}
+
+function renderMessage(sender, text) {
+    const chatBox = document.getElementById('chat-box');
+    const msg = document.createElement('div');
+    if (sender === "me") {
+        msg.className = "flex justify-end animate-fade-in";
+        msg.innerHTML = `<div class="bubble-right p-3 text-sm max-w-[80%] text-white shadow-lg">${text}</div>`;
+    } else {
+        msg.className = "flex items-start gap-2 animate-bounce-in";
+        msg.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 flex items-center justify-center text-sm">👤</div>
+            <div class="bubble-left p-3 text-sm max-w-[80%] shadow-lg">${text}</div>
+        `;
+    }
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+</body>
+</html>
