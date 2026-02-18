@@ -46,35 +46,103 @@
         </button>
     </main>
 
-    <script>
-        const tags = ["音量バグ", "要約禁止", "正論パンチ", "低気圧に弱い", "褒め殺し弱点", "空腹暴走", "レアキャラ", "充電切れ", "夜行性", "社交的", "内向的", "感情豊か", "クール", "天然", "ツンデレ", "マイペース", "せっかち", "のんびり屋"];
-        const selectedTags = new Set();
+   <script>
+    // 1. 50種類の属性データベース（OSカテゴリー分け版）
+    const tagDatabase = {
+        "通信OS": ["要約禁止", "音量バグ", "正論パンチ", "主語喪失", "既読スルー仕様", "話泥棒", "オウム返し", "独り言モード", "遠回しプロトコル", "沈黙の壁"],
+        "動作OS": ["空腹暴走", "充電切れ", "低気圧に弱い", "夜行性", "せっかち", "のんびり屋", "ルーチン固執", "探し物バグ", "方向音痴OS", "ギリギリ駆動"],
+        "感情OS": ["褒め殺し弱点", "ツンデレ", "豆腐メンタル", "鋼鉄の意志", "涙腺崩壊", "ポーカーフェイス", "寂しがり屋", "熱血モード", "冷笑フィルター", "嫉妬センサー"],
+        "社会OS": ["空気読みすぎ", "マイペース", "社交的", "内向的", "リーダー志向", "フォロワー属性", "忖度エンジン", "忖度ゼロ", "秘密保持エラー", "お節介プログラム"],
+        "特殊仕様": ["天然", "雑学王", "コレクター", "ロマンチスト", "リアリスト", "健康オタク", "デジタル中毒", "アナログ派", "レアキャラ", "ラスボス感"]
+    };
 
-        const container = document.getElementById('tag-container');
-        tags.forEach(tag => {
+    let selectedTags = []; // 選択されたタグを格納する配列ですぞ
+
+    // 2. 画面起動時の初期設定
+    window.onload = () => {
+        renderCategories();
+    };
+
+    // 3. カテゴリーボタンの生成
+    function renderCategories() {
+        const container = document.getElementById('category-buttons'); // HTML側にこのIDが必要ですぞ
+        container.innerHTML = '';
+        Object.keys(tagDatabase).forEach(cat => {
             const btn = document.createElement('button');
-            btn.textContent = tag;
-            btn.className = "px-3 py-1.5 rounded-full border border-emerald-500/50 text-xs transition-colors hover:border-emerald-500";
-            btn.onclick = () => {
-                btn.classList.toggle('tag-selected');
-                selectedTags.has(tag) ? selectedTags.delete(tag) : selectedTags.add(tag);
-            };
+            btn.type = "button"; // フォーム送信を防ぐため
+            btn.className = "py-2 px-3 bg-gray-800 border border-emerald-500/30 rounded-lg text-xs font-bold hover:bg-emerald-900/20 transition-all";
+            btn.textContent = cat;
+            btn.onclick = () => showTags(cat);
             container.appendChild(btn);
         });
+    }
 
-        function analyzeHuman() {
-    const nickname = document.getElementById('nickname').value;
-    const selectedArray = Array.from(selectedTags);
-    
-    if(!nickname || selectedArray.length === 0) return alert("ニックネームと属性を1つ以上選ぶのだ！");
+    // 4. タグを「シュパッと」表示する関数
+    function showTags(category) {
+        const area = document.getElementById('tag-display-area'); // HTML側にこのIDが必要ですぞ
+        
+        area.classList.remove('opacity-100', 'translate-y-0');
+        area.classList.add('opacity-0', 'translate-y-4');
 
-    // バケツにデータを入れる（localStorage）
-    localStorage.setItem('gth_nickname', nickname);
-    localStorage.setItem('gth_tag', selectedArray[0]); // 最初の一つを解析対象にする
+        setTimeout(() => {
+            area.innerHTML = '';
+            tagDatabase[category].forEach(tag => {
+                const btn = document.createElement('button');
+                btn.type = "button";
+                const isSelected = selectedTags.includes(tag);
+                btn.className = `py-3 px-2 rounded-xl border text-[11px] transition-all active:scale-95 ${isSelected ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-gray-900 border-emerald-500/20 text-gray-400'}`;
+                btn.textContent = `[${tag}]`;
+                btn.onclick = () => toggleTag(tag, category);
+                area.appendChild(btn);
+            });
 
-    location.href = 'result.html'; 
-}
+            area.classList.remove('opacity-0', 'translate-y-4');
+            area.classList.add('opacity-100', 'translate-y-0');
+        }, 150);
+    }
 
-    </script>
+    // 5. タグの選択・解除
+    function toggleTag(tag, category) {
+        const index = selectedTags.indexOf(tag);
+        if (index > -1) {
+            selectedTags.splice(index, 1);
+        } else if (selectedTags.length < 3) {
+            selectedTags.push(tag);
+        } else {
+            alert("属性は3つまでですぞ！");
+        }
+        updateSelectedDisplay();
+        showTags(category); // 再描画して色を更新
+    }
+
+    // 6. 選択済み表示の更新
+    function updateSelectedDisplay() {
+        const container = document.getElementById('selected-tags-container');
+        if(!container) return;
+        container.innerHTML = '';
+        selectedTags.forEach(tag => {
+            const span = document.createElement('span');
+            span.className = "bg-emerald-500 text-gray-900 text-[10px] font-bold px-2 py-1 rounded-full animate-bounce";
+            span.textContent = tag;
+            container.appendChild(span);
+        });
+    }
+
+    // 7. 【重要】解析実行ボタンの関数（以前のものをパワーアップ！）
+    function analyzeHuman() {
+        const nickname = document.getElementById('nickname').value;
+        
+        if(!nickname) return alert("ニックネームを入力するのだ！");
+        if(selectedTags.length === 0) return alert("属性を1つ以上選ぶのだ！");
+
+        // データの保存
+        localStorage.setItem('gth_nickname', nickname);
+        // 複数のタグをカンマ区切りで保存（result.htmlで受け取れるように！）
+        localStorage.setItem('gth_tag', selectedTags.join(',')); 
+
+        // 結果画面へ遷移
+        location.href = 'result.html'; 
+    }
+</script>
 </body>
 </html>
